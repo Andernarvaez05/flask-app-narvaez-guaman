@@ -8,7 +8,7 @@ login_manager = LoginManager()
 
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder='views')
     app.config.from_object(Config)
 
     login_manager.init_app(app)

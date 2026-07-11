@@ -21,6 +21,9 @@ jobs:
       - name: Checkout del repo
         uses: actions/checkout@v4
 
+      - name: Normalizar nombre del repo a minúsculas (Docker lo exige)
+        run: echo "REPO_LC=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+
       - name: Login en GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -33,7 +36,7 @@ jobs:
         with:
           context: ${{ matrix.contexto }}
           push: true
-          tags: ghcr.io/${{ github.repository }}-${{ matrix.servicio }}:latest
+          tags: ghcr.io/${{ env.REPO_LC }}-${{ matrix.servicio }}:latest
 
   deploy:
     needs: build-and-push
@@ -45,9 +48,12 @@ jobs:
       - name: Checkout del repo
         uses: actions/checkout@v4
 
+      - name: Normalizar nombre del repo a minúsculas (Docker lo exige)
+        run: echo "REPO_LC=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
+
       - name: Sustituir nombre real de las imágenes en docker-compose.yml
         run: |
-          sed -i "s#OWNER/REPO#${{ github.repository }}#g" docker-compose.yml
+          sed -i "s#OWNER/REPO#${{ env.REPO_LC }}#g" docker-compose.yml
 
       - name: Copiar docker-compose.yml al VPS
         uses: appleboy/scp-action@v0.1.7

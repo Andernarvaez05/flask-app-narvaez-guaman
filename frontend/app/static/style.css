@@ -1,0 +1,47 @@
+* { box-sizing: border-box; }
+body {
+    font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: #f4f5f7;
+    margin: 0;
+    color: #1f2430;
+}
+.topbar {
+    background: #1f2430;
+    color: #fff;
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.topbar .brand { font-weight: 600; }
+.topbar nav a { color: #cfd4dc; margin-left: 16px; text-decoration: none; }
+.topbar nav a:hover { color: #fff; }
+.container { max-width: 900px; margin: 32px auto; padding: 0 16px; }
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.table th, .table td { padding: 10px 12px; border-bottom: 1px solid #e6e8ec; text-align: left; font-size: 14px; }
+.table th { background: #eef0f3; }
+.table .empty { text-align: center; color: #888; padding: 24px; }
+.actions { display: flex; gap: 8px; }
+.inline-form { display: inline; }
+.btn {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: 1px solid #d0d3d9;
+    background: #fff;
+    color: #1f2430;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+.btn-primary { background: #2f6fed; border-color: #2f6fed; color: #fff; }
+.btn-danger { background: #e5484d; border-color: #e5484d; color: #fff; }
+.btn-small { padding: 4px 10px; font-size: 13px; }
+.form-card { max-width: 420px; margin: 0 auto; background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.form-card label { display: block; margin-top: 12px; font-size: 13px; font-weight: 600; }
+.form-card input { width: 100%; padding: 8px 10px; margin-top: 4px; border: 1px solid #d0d3d9; border-radius: 6px; font-size: 14px; }
+.form-actions { margin-top: 20px; display: flex; gap: 8px; }
+.alert { padding: 10px 14px; border-radius: 6px; margin-bottom: 16px; font-size: 14px; }
+.alert-error { background: #fde8e8; color: #b42318; }
+.alert-success { background: #e6f6ec; color: #12742f; }

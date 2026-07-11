@@ -1,0 +1,42 @@
+services:
+  backend:
+    image: ghcr.io/OWNER/REPO-backend:latest
+    container_name: backend
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - web
+      - backend
+
+  frontend:
+    image: ghcr.io/OWNER/REPO-frontend:latest
+    container_name: frontend
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+
+      # Router principal: app.guaman.byronrm.com
+      - "traefik.http.routers.frontend.rule=Host(`app.guaman.byronrm.com`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.frontend.loadbalancer.server.port=5001"
+
+      # Router del dominio raíz (apex): guaman.byronrm.com -> redirige a app.*
+      - "traefik.http.routers.frontend-root.rule=Host(`guaman.byronrm.com`)"
+      - "traefik.http.routers.frontend-root.entrypoints=websecure"
+      - "traefik.http.routers.frontend-root.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.frontend-root.middlewares=redirect-to-app"
+      - "traefik.http.middlewares.redirect-to-app.redirectregex.regex=^https?://guaman\\.byronrm\\.com/(.*)"
+      - "traefik.http.middlewares.redirect-to-app.redirectregex.replacement=https://app.guaman.byronrm.com/$${1}"
+      - "traefik.http.middlewares.redirect-to-app.redirectregex.permanent=true"
+
+networks:
+  web:
+    external: true
+  backend:
+    external: true

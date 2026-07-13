@@ -4,29 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Gestión de Usuarios{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-    <header class="topbar">
-        <span class="brand">Gestión de Usuarios</span>
-        {% if current_user.is_authenticated %}
-        <nav>
-            <a href="{{ url_for('usuarios.listar') }}">Usuarios</a>
-            <a href="{{ url_for('auth.logout') }}">Cerrar sesión ({{ current_user.id }})</a>
-        </nav>
-        {% endif %}
-    </header>
+<body class="{{ 'has-sidebar' if current_user.is_authenticated else 'centered' }}">
+    {% if current_user.is_authenticated %}
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-mark">GU</span>
+                <span class="brand-text">Gestión de<br>Usuarios</span>
+            </div>
 
-    <main class="container">
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('usuarios.listar') }}" class="nav-item {{ 'active' if request.endpoint == 'usuarios.listar' }}">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    <span>Inicio</span>
+                </a>
+                <a href="{{ url_for('usuarios.listar') }}" class="nav-item {{ 'active' if request.endpoint and request.endpoint.startswith('usuarios.') }}">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-8.13a4 4 0 110 8 4 4 0 010-8zm6 3a4 4 0 100 8 4 4 0 000-8z"/></svg>
+                    <span>Usuarios</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-chip">
+                    <span class="avatar">{{ current_user.id[0]|upper }}</span>
+                    <span class="user-name">{{ current_user.id }}</span>
+                </div>
+                <a href="{{ url_for('auth.logout') }}" class="nav-item logout">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                    <span>Cerrar sesión</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="alerts">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    {% else %}
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
+                <div class="alerts alerts-standalone">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
             {% endif %}
         {% endwith %}
-
-        {% block content %}{% endblock %}
-    </main>
+        {% block content_standalone %}{% endblock %}
+    {% endif %}
 </body>
 </html>
